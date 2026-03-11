@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — PlaceWise{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">My Profile</h1>
+    <p class="page-subtitle">Keep your information up to date for better placement opportunities</p>
+</div>
+
+<div style="max-width: 640px;">
+    <div class="card-custom">
+        <div class="card-body-custom">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-custom">Full Name</label>
+                        <input type="text" name="name" class="form-control-custom" value="{{ student.name }}" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Email</label>
+                        <input type="email" class="form-control-custom" value="{{ student.email }}" disabled style="opacity: 0.6;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Phone</label>
+                        <input type="text" name="phone" class="form-control-custom" value="{{ student.phone or '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">CGPA</label>
+                        <input type="number" name="cgpa" class="form-control-custom" value="{{ student.cgpa or '' }}" step="0.1" min="0" max="10">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label-custom">Department</label>
+                        <select name="department" class="form-control-custom">
+                            <option value="">— Select —</option>
+                            {% for dept in ['Computer Science','Information Technology','Electronics & Communication','Electrical Engineering','Mechanical Engineering','Civil Engineering','Data Science','MBA','Other'] %}
+                            <option {% if student.department == dept %}selected{% endif %}>{{ dept }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Graduation Year</label>
+                        <input type="text" name="graduation_year" class="form-control-custom" value="{{ student.graduation_year or '' }}" placeholder="2025">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Skills</label>
+                        <input type="text" name="skills" class="form-control-custom" value="{{ student.skills or '' }}" placeholder="Python, SQL, React, etc.">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Bio / About</label>
+                        <textarea name="bio" class="form-control-custom" rows="3" placeholder="Tell companies about yourself...">{{ student.bio or '' }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Resume (PDF/DOC)</label>
+                        {% if student.resume %}
+                        <div style="margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--muted);">
+                            <i class="bi bi-file-earmark-check me-1 text-success"></i>
+                            Current: {{ student.resume }}
+                            <a href="{{ url_for('static', filename='uploads/resumes/' + student.resume) }}" target="_blank" style="color: var(--accent2); margin-left: 0.5rem;">View</a>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="resume" class="form-control-custom" accept=".pdf,.doc,.docx" style="padding: 0.45rem 0.85rem;">
+                        <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem;">PDF or Word, max 5MB</div>
+                    </div>
+                    <div class="col-12 d-flex gap-2 mt-2">
+                        <button type="submit" class="btn-accent">
+                            <i class="bi bi-check2"></i> Save Profile
+                        </button>
+                        <a href="{{ url_for('student_dashboard') }}" class="btn-outline-ink">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

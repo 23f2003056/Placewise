@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Student Registration — PlaceWise{% endblock %}
+{% block content %}
+<div style="min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 2rem;">
+    <div style="width: 100%; max-width: 540px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;">Student Registration</h1>
+            <p style="color: var(--muted); font-size: 0.875rem;">Create your student account to get started</p>
+        </div>
+
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label-custom">Full Name *</label>
+                            <input type="text" name="name" class="form-control-custom" placeholder="Your full name" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Email Address *</label>
+                            <input type="email" name="email" class="form-control-custom" placeholder="your@email.com" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Password *</label>
+                            <input type="password" name="password" class="form-control-custom" placeholder="Choose a strong password" required minlength="6">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Phone *</label>
+                            <input type="text" name="phone" class="form-control-custom" placeholder="10-digit number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">CGPA</label>
+                            <input type="number" name="cgpa" class="form-control-custom" placeholder="e.g. 8.5" step="0.1" min="0" max="10">
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label-custom">Department *</label>
+                            <select name="department" class="form-control-custom" required>
+                                <option value="">— Select —</option>
+                                <option>Computer Science</option>
+                                <option>Information Technology</option>
+                                <option>Electronics & Communication</option>
+                                <option>Electrical Engineering</option>
+                                <option>Mechanical Engineering</option>
+                                <option>Civil Engineering</option>
+                                <option>Data Science</option>
+                                <option>MBA</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Graduation Year</label>
+                            <input type="text" name="graduation_year" class="form-control-custom" placeholder="2025">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn-accent" style="width: 100%; justify-content: center; padding: 0.7rem;">
+                                <i class="bi bi-person-check"></i> Create Account
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.25rem; font-size: 0.875rem; color: var(--muted);">
+            Already have an account? <a href="{{ url_for('login') }}" style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

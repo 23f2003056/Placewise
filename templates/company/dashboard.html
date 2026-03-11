@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Company Dashboard — PlaceWise{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2">
+    <div>
+        <h1 class="page-title">{{ company.company_name }}</h1>
+        <p class="page-subtitle">{{ company.industry or 'Company' }} &nbsp;·&nbsp; {{ company.email }}</p>
+    </div>
+    <a href="{{ url_for('company_create_drive') }}" class="btn-accent">
+        <i class="bi bi-plus-lg"></i> New Drive
+    </a>
+</div>
+
+<!-- Company Info Card -->
+<div class="card-custom mb-4">
+    <div class="card-header-custom">
+        <strong style="font-family: 'Syne', sans-serif; font-size: 0.9rem;"><i class="bi bi-building me-2"></i>Company Profile</strong>
+    </div>
+    <div class="card-body-custom">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">HR Contact</div>
+                <div>{{ company.hr_contact or '—' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Website</div>
+                <div>{% if company.website %}<a href="{{ company.website }}" target="_blank" style="color: var(--accent2);">{{ company.website }}</a>{% else %}—{% endif %}</div>
+            </div>
+            <div class="col-md-4">
+                <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Account Status</div>
+                <span class="status-badge status-{{ company.status }}">{{ company.status }}</span>
+            </div>
+            {% if company.description %}
+            <div class="col-12">
+                <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">About</div>
+                <div style="font-size: 0.875rem;">{{ company.description }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Placement Drives -->
+<div class="page-header" style="margin-bottom: 1rem;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700;">Your Placement Drives</h2>
+</div>
+
+{% if drives %}
+<div class="card-custom">
+    <div style="overflow-x: auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Location</th>
+                    <th>Package</th>
+                    <th>Deadline</th>
+                    <th>Applicants</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in drives %}
+                <tr>
+                    <td style="font-weight: 613;">{{ d.job_title }}</td>
+                    <td>{{ d.location or '—' }}</td>
+                    <td>{{ d.package or '—' }}</td>
+                    <td style="font-size: 0.8rem;">{{ d.deadline or '—' }}</td>
+                    <td>
+                        <a href="{{ url_for('company_view_applications', did=d.id) }}" style="font-family: 'Syne', sans-serif; font-weight: 700; color: var(--accent2); text-decoration: none;">
+                            {{ d.app_count }} <i class="bi bi-arrow-right-short"></i>
+                        </a>
+                    </td>
+                    <td><span class="status-badge status-{{ d.status }}">{{ d.status }}</span></td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <a href="{{ url_for('company_view_applications', did=d.id) }}" class="btn-outline-ink btn-sm-custom">
+                                <i class="bi bi-people"></i> Applicants
+                            </a>
+                            {% if d.status != 'closed' %}
+                            <a href="{{ url_for('company_edit_drive', did=d.id) }}" class="btn-outline-ink btn-sm-custom">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="POST" action="{{ url_for('company_close_drive', did=d.id) }}" style="display:inline;">
+                                <button type="submit" class="btn-outline-ink btn-sm-custom">Close</button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('company_delete_drive', did=d.id) }}" style="display:inline;" onsubmit="return confirm('Delete this drive?')">
+                                <button type="submit" class="btn-outline-ink btn-sm-custom" style="border-color: #dc2626; color: #dc2626;"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card-custom">
+    <div class="empty-state">
+        <i class="bi bi-briefcase d-block"></i>
+        <p>No drives yet. <a href="{{ url_for('company_create_drive') }}" style="color: var(--accent);">Create your first drive</a></p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

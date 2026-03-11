@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard — PlaceWise{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2">
+    <div>
+        <h1 class="page-title">Hello, {{ student.name.split()[0] }}!</h1>
+        <p class="page-subtitle">{{ student.department or 'Student' }} &nbsp;·&nbsp; CGPA: {{ student.cgpa or 'N/A' }}</p>
+    </div>
+    <a href="{{ url_for('student_profile') }}" class="btn-outline-ink btn-sm-custom">
+        <i class="bi bi-person-circle"></i> Edit Profile
+    </a>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card orange">
+            <div class="stat-number">{{ approved_drives|length }}</div>
+            <div class="stat-label">Open Drives</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card blue">
+            <div class="stat-number">{{ my_applications|length }}</div>
+            <div class="stat-label">Applied</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card green">
+            <div class="stat-number">{{ my_applications | selectattr('status', 'equalto', 'shortlisted') | list | length }}</div>
+            <div class="stat-label">Shortlisted</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card yellow">
+            <div class="stat-number">{{ my_applications | selectattr('status', 'equalto', 'selected') | list | length }}</div>
+            <div class="stat-label">Selected</div>
+        </div>
+    </div>
+</div>
+
+<!-- Resume alert -->
+{% if not student.resume %}
+<div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+    <span style="font-size: 0.875rem;"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Upload your resume to improve your applications.</span>
+    <a href="{{ url_for('student_profile') }}" class="btn-accent btn-sm-custom">Upload Resume</a>
+</div>
+{% endif %}
+
+<!-- Open Drives -->
+<div style="margin-bottom: 1rem;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">
+        Available Drives
+        <span style="font-size: 0.75rem; font-weight: 500; color: var(--muted); margin-left: 0.5rem;">{{ approved_drives|length }} open</span>
+    </h2>
+
+    {% if approved_drives %}
+        {% for d in approved_drives %}
+        <div class="drive-card">
+            <div class="drive-company">{{ d.company_name }}</div>
+            <div class="drive-title">{{ d.job_title }}</div>
+            <div class="drive-meta">
+                {% if d.location %}<span class="drive-meta-item"><i class="bi bi-geo-alt"></i>{{ d.location }}</span>{% endif %}
+                {% if d.package %}<span class="drive-meta-item"><i class="bi bi-cash"></i>{{ d.package }}</span>{% endif %}
+                {% if d.vacancies %}<span class="drive-meta-item"><i class="bi bi-people"></i>{{ d.vacancies }} openings</span>{% endif %}
+                {% if d.deadline %}<span class="drive-meta-item"><i class="bi bi-calendar"></i>Deadline: {{ d.deadline }}</span>{% endif %}
+            </div>
+            {% if d.eligibility %}
+            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--muted);">
+                <i class="bi bi-check-circle me-1"></i>{{ d.eligibility }}
+            </div>
+            {% endif %}
+            <div style="margin-top: 0.85rem;">
+                <form method="POST" action="{{ url_for('student_apply', did=d.id) }}" style="display: inline;">
+                    <button type="submit" class="btn-accent btn-sm-custom">
+                        <i class="bi bi-send"></i> Apply Now
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card-custom">
+            <div class="empty-state">
+                <i class="bi bi-briefcase d-block"></i>
+                <p>No open drives available right now. Check back later!</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- My Applications -->
+{% if my_applications %}
+<div>
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">My Applications</h2>
+    <div class="card-custom">
+        <div style="overflow-x: auto;">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Applied On</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in my_applications %}
+                    <tr>
+                        <td style="font-weight: 613;">{{ a.job_title }}</td>
+                        <td>{{ a.company_name }}</td>
+                        <td style="font-size: 0.8rem; color: var(--muted);">{{ a.applied_at[:10] if a.applied_at else '—' }}</td>
+                        <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Create Drive — PlaceWise{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Create Placement Drive</h1>
+    <p class="page-subtitle">Fill in the job details — admin will review and approve</p>
+</div>
+
+<div style="max-width: 680px;">
+    <div class="card-custom">
+        <div class="card-body-custom">
+            <form method="POST">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-custom">Job Title *</label>
+                        <input type="text" name="job_title" class="form-control-custom" placeholder="e.g. Software Engineer" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Location</label>
+                        <input type="text" name="location" class="form-control-custom" placeholder="e.g. Bangalore / Remote">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label-custom">Package (LPA)</label>
+                        <input type="text" name="package" class="form-control-custom" placeholder="e.g. 12 LPA">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label-custom">Vacancies</label>
+                        <input type="number" name="vacancies" class="form-control-custom" value="1" min="1">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Job Description *</label>
+                        <textarea name="job_description" class="form-control-custom" rows="4" placeholder="Describe the role and responsibilities..." required></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Eligibility Criteria</label>
+                        <textarea name="eligibility" class="form-control-custom" rows="2" placeholder="e.g. CGPA >= 7.0, CS/IT branches only"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Application Deadline *</label>
+                        <input type="date" name="deadline" class="form-control-custom" required>
+                    </div>
+                    <div class="col-12 d-flex gap-2 mt-2">
+                        <button type="submit" class="btn-accent">
+                            <i class="bi bi-send"></i> Submit for Approval
+                        </button>
+                        <a href="{{ url_for('company_dashboard') }}" class="btn-outline-ink">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

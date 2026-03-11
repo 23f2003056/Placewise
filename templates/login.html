@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Login — PlaceWise{% endblock %}
+{% block content %}
+<div style="min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--paper);">
+    <div style="width: 100%; max-width: 440px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;">Welcome back</h1>
+            <p style="color: var(--muted); font-size: 0.875rem;">Sign in to your PlaceWise account</p>
+        </div>
+
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="mb-3">
+                        <label class="form-label-custom">Role</label>
+                        <select name="role" class="form-control-custom" required>
+                            <option value="">— Select Role —</option>
+                            <option value="admin">Admin</option>
+                            <option value="company">Company</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-custom">Email Address</label>
+                        <input type="email" name="email" class="form-control-custom" placeholder="you@example.com" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label-custom">Password</label>
+                        <input type="password" name="password" class="form-control-custom" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-accent" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 0.7rem;">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--muted);">
+            New here? &nbsp;
+            <a href="{{ url_for('register_student') }}" style="color: var(--accent); font-weight: 600; text-decoration: none;">Register as Student</a>
+            &nbsp;or&nbsp;
+            <a href="{{ url_for('register_company') }}" style="color: var(--accent2); font-weight: 600; text-decoration: none;">Register Company</a>
+        </div>
+
+        <div style="margin-top: 1.5rem; background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.8rem; color: var(--muted);">
+            <strong style="color: var(--ink);">Demo Credentials</strong><br>
+            Admin: <code>admin@placement.edu</code> / <code>admin123</code>
+        </div>
+    </div>
+</div>
+{% endblock %}

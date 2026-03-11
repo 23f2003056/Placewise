@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Companies — Admin{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2">
+    <div>
+        <h1 class="page-title">Companies</h1>
+        <p class="page-subtitle">Manage company registrations and accounts</p>
+    </div>
+</div>
+
+<form method="GET" class="search-bar">
+    <input type="text" name="search" class="form-control-custom" placeholder="Search by name or ID..." value="{{ search }}">
+    <button type="submit" class="btn-accent btn-sm-custom"><i class="bi bi-search"></i> Search</button>
+    {% if search %}<a href="{{ url_for('admin_companies') }}" class="btn-outline-ink btn-sm-custom">Clear</a>{% endif %}
+</form>
+
+<div class="card-custom">
+    <div style="overflow-x: auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>Industry</th>
+                    <th>HR Contact</th>
+                    <th>Registered</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in companies %}
+                <tr>
+                    <td style="color: var(--muted); font-size: 0.8rem;">#{{ c.id }}</td>
+                    <td>
+                        <div style="font-weight: 613;">{{ c.company_name }}</div>
+                        <div style="font-size: 0.75rem; color: var(--muted);">{{ c.email }}</div>
+                    </td>
+                    <td>{{ c.industry or '—' }}</td>
+                    <td>{{ c.hr_contact or '—' }}</td>
+                    <td style="font-size: 0.8rem; color: var(--muted);">{{ c.created_at[:10] if c.created_at else '—' }}</td>
+                    <td><span class="status-badge status-{{ c.status }}">{{ c.status }}</span></td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            {% if c.status == 'pending' %}
+                            <form method="POST" action="{{ url_for('admin_company_action', cid=c.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: var(--success-color);">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin_company_action', cid=c.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: #dc2626;">Reject</button>
+                            </form>
+                            {% elif c.status == 'approved' %}
+                            <form method="POST" action="{{ url_for('admin_company_action', cid=c.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="blacklist">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: #374151;">Blacklist</button>
+                            </form>
+                            {% elif c.status == 'blacklisted' or c.status == 'rejected' %}
+                            <form method="POST" action="{{ url_for('admin_company_action', cid=c.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="activate">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: var(--success-color);">Activate</button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin_company_action', cid=c.id) }}" style="display:inline;" onsubmit="return confirm('Delete this company?')">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn-outline-ink btn-sm-custom" style="border-color: #dc2626; color: #dc2626;">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="bi bi-building d-block"></i>
+                            <p>No companies found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

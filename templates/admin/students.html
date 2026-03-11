@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Students — Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Students</h1>
+    <p class="page-subtitle">Search and manage student accounts</p>
+</div>
+
+<form method="GET" class="search-bar">
+    <input type="text" name="search" class="form-control-custom" placeholder="Search by name, ID, or phone..." value="{{ search }}">
+    <button type="submit" class="btn-accent btn-sm-custom"><i class="bi bi-search"></i> Search</button>
+    {% if search %}<a href="{{ url_for('admin_students') }}" class="btn-outline-ink btn-sm-custom">Clear</a>{% endif %}
+</form>
+
+<div class="card-custom">
+    <div style="overflow-x: auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>CGPA</th>
+                    <th>Phone</th>
+                    <th>Grad Year</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td style="color: var(--muted); font-size: 0.8rem;">#{{ s.id }}</td>
+                    <td>
+                        <div style="font-weight: 613;">{{ s.name }}</div>
+                        <div style="font-size: 0.75rem; color: var(--muted);">{{ s.email }}</div>
+                    </td>
+                    <td>{{ s.department or '—' }}</td>
+                    <td>{{ s.cgpa or '—' }}</td>
+                    <td>{{ s.phone or '—' }}</td>
+                    <td>{{ s.graduation_year or '—' }}</td>
+                    <td><span class="status-badge status-{{ s.status }}">{{ s.status }}</span></td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            {% if s.status == 'active' %}
+                            <form method="POST" action="{{ url_for('admin_student_action', sid=s.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="blacklist">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: #374151;">Blacklist</button>
+                            </form>
+                            {% else %}
+                            <form method="POST" action="{{ url_for('admin_student_action', sid=s.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="activate">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: var(--success-color);">Activate</button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin_student_action', sid=s.id) }}" style="display:inline;" onsubmit="return confirm('Delete this student?')">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn-outline-ink btn-sm-custom" style="border-color: #dc2626; color: #dc2626;">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="bi bi-people d-block"></i>
+                            <p>No students found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

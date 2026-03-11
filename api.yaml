@@ -1,0 +1,145 @@
+openapi: 3.0.0
+
+info:
+  title: PlaceWise Placement Portal API
+  version: 1.0.0
+  description: REST API for the PlaceWise campus placement portal (MAD 1 Project)
+
+servers:
+  - url: http://localhost:5000/api
+
+paths:
+
+  /students:
+    get:
+      summary: Get all students
+      description: Returns a list of all registered students. Admin access only.
+      responses:
+        '200':
+          description: List of students
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: Alice Smith
+                  email: alice@iitm.ac.in
+                  department: Computer Science
+                  cgpa: 8.5
+                  status: active
+        '403':
+          description: Forbidden - Admin access required
+
+  /companies:
+    get:
+      summary: Get all companies
+      description: Returns a list of all registered companies. Admin access only.
+      responses:
+        '200':
+          description: List of companies
+          content:
+            application/json:
+              example:
+                - id: 1
+                  company_name: TechCorp
+                  industry: Technology
+                  status: approved
+        '403':
+          description: Forbidden - Admin access required
+
+  /drives:
+    get:
+      summary: Get all approved placement drives
+      description: Returns all placement drives with status 'approved'. Accessible to logged-in students.
+      responses:
+        '200':
+          description: List of approved drives
+          content:
+            application/json:
+              example:
+                - id: 1
+                  job_title: Software Engineer
+                  company_name: TechCorp
+                  location: Bangalore
+                  package: 12 LPA
+                  deadline: "2026-04-30"
+                  status: approved
+
+  /drives/{id}:
+    get:
+      summary: Get a specific placement drive
+      description: Returns details of a single placement drive by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Drive ID
+      responses:
+        '200':
+          description: Drive details
+          content:
+            application/json:
+              example:
+                id: 1
+                job_title: Software Engineer
+                job_description: Build and maintain backend services.
+                eligibility: CGPA >= 7.0, CS/IT only
+                company_name: TechCorp
+                location: Bangalore
+                package: 12 LPA
+                vacancies: 5
+                deadline: "2026-04-30"
+        '404':
+          description: Drive not found
+
+  /applications:
+    get:
+      summary: Get applications for the logged-in student
+      description: Returns all applications submitted by the currently logged-in student.
+      responses:
+        '200':
+          description: List of applications
+          content:
+            application/json:
+              example:
+                - id: 1
+                  drive_id: 1
+                  job_title: Software Engineer
+                  company_name: TechCorp
+                  applied_at: "2026-03-10"
+                  status: shortlisted
+        '403':
+          description: Forbidden - Student login required
+
+    post:
+      summary: Apply to a placement drive
+      description: Submit an application for an approved placement drive. Duplicate applications are rejected.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - drive_id
+              properties:
+                drive_id:
+                  type: integer
+                  description: ID of the drive to apply for
+            example:
+              drive_id: 1
+      responses:
+        '201':
+          description: Application submitted successfully
+          content:
+            application/json:
+              example:
+                message: Application submitted successfully
+                application_id: 5
+        '400':
+          description: Already applied for this drive
+        '403':
+          description: Forbidden - Student login required
+        '404':
+          description: Drive not found or not approved

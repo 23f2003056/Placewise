@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — PlaceWise{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Institute Placement Cell overview</p>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card orange">
+            <div class="stat-number">{{ stats.students }}</div>
+            <div class="stat-label">Students</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card blue">
+            <div class="stat-number">{{ stats.companies }}</div>
+            <div class="stat-label">Companies</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card green">
+            <div class="stat-number">{{ stats.drives }}</div>
+            <div class="stat-label">Drives</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card yellow">
+            <div class="stat-number">{{ stats.applications }}</div>
+            <div class="stat-label">Applications</div>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Alerts -->
+{% if stats.pending_companies > 0 or stats.pending_drives > 0 %}
+<div class="row g-3 mb-4">
+    {% if stats.pending_companies > 0 %}
+    <div class="col-md-6">
+        <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <strong style="font-family: 'Syne', sans-serif;">{{ stats.pending_companies }} Company Registrations</strong>
+                <p style="font-size: 0.8rem; color: #92400e; margin: 0;">Awaiting your approval</p>
+            </div>
+            <a href="{{ url_for('admin_companies') }}" class="btn-accent btn-sm-custom">Review</a>
+        </div>
+    </div>
+    {% endif %}
+    {% if stats.pending_drives > 0 %}
+    <div class="col-md-6">
+        <div style="background: #dbeafe; border: 1px solid #93c5fd; border-radius: 8px; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <strong style="font-family: 'Syne', sans-serif;">{{ stats.pending_drives }} Placement Drives</strong>
+                <p style="font-size: 0.8rem; color: #1e40af; margin: 0;">Awaiting your approval</p>
+            </div>
+            <a href="{{ url_for('admin_drives') }}" class="btn-accent btn-sm-custom">Review</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Quick Links -->
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <strong style="font-family: 'Syne', sans-serif; font-size: 0.9rem;"><i class="bi bi-building me-2"></i>Companies</strong>
+            </div>
+            <div class="card-body-custom">
+                <p style="font-size: 0.875rem; color: var(--muted);">Approve registrations, manage company accounts and blacklist if needed.</p>
+                <a href="{{ url_for('admin_companies') }}" class="btn-accent btn-sm-custom">Manage Companies</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <strong style="font-family: 'Syne', sans-serif; font-size: 0.9rem;"><i class="bi bi-people me-2"></i>Students</strong>
+            </div>
+            <div class="card-body-custom">
+                <p style="font-size: 0.875rem; color: var(--muted);">Search students, view profiles, and manage student accounts.</p>
+                <a href="{{ url_for('admin_students') }}" class="btn-accent btn-sm-custom">Manage Students</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <strong style="font-family: 'Syne', sans-serif; font-size: 0.9rem;"><i class="bi bi-briefcase me-2"></i>Drives & Applications</strong>
+            </div>
+            <div class="card-body-custom">
+                <p style="font-size: 0.875rem; color: var(--muted);">Approve placement drives and view all student applications.</p>
+                <a href="{{ url_for('admin_drives') }}" class="btn-accent btn-sm-custom">View Drives</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

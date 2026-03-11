@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Placement Drives — Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Placement Drives</h1>
+    <p class="page-subtitle">Approve, reject, or manage all placement drives</p>
+</div>
+
+<div class="card-custom">
+    <div style="overflow-x: auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Package</th>
+                    <th>Deadline</th>
+                    <th>Applicants</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in drives %}
+                <tr>
+                    <td style="color: var(--muted); font-size: 0.8rem;">#{{ d.id }}</td>
+                    <td>
+                        <div style="font-weight: 613;">{{ d.job_title }}</div>
+                        <div style="font-size: 0.75rem; color: var(--muted);">{{ d.created_at[:10] if d.created_at else '' }}</div>
+                    </td>
+                    <td>{{ d.company_name }}</td>
+                    <td>{{ d.location or '—' }}</td>
+                    <td>{{ d.package or '—' }}</td>
+                    <td style="font-size: 0.8rem;">{{ d.deadline or '—' }}</td>
+                    <td>
+                        <span style="font-family: 'Syne', sans-serif; font-weight: 700;">{{ d.app_count }}</span>
+                    </td>
+                    <td><span class="status-badge status-{{ d.status }}">{{ d.status }}</span></td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            {% if d.status == 'pending' %}
+                            <form method="POST" action="{{ url_for('admin_drive_action', did=d.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: var(--success-color);">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin_drive_action', did=d.id) }}" style="display:inline;">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="btn-accent btn-sm-custom" style="background: #dc2626;">Reject</button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin_drive_action', did=d.id) }}" style="display:inline;" onsubmit="return confirm('Delete this drive?')">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn-outline-ink btn-sm-custom" style="border-color: #dc2626; color: #dc2626;">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9">
+                        <div class="empty-state">
+                            <i class="bi bi-briefcase d-block"></i>
+                            <p>No drives found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

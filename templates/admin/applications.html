@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Applications — Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">All Applications</h1>
+    <p class="page-subtitle">Complete placement application history</p>
+</div>
+
+<div class="card-custom">
+    <div style="overflow-x: auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Applied On</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in applications %}
+                <tr>
+                    <td style="color: var(--muted); font-size: 0.8rem;">#{{ a.id }}</td>
+                    <td>{{ a.student_name }}</td>
+                    <td style="font-weight: 613;">{{ a.job_title }}</td>
+                    <td>{{ a.company_name }}</td>
+                    <td style="font-size: 0.8rem; color: var(--muted);">{{ a.applied_at[:10] if a.applied_at else '—' }}</td>
+                    <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-file-earmark-text d-block"></i>
+                            <p>No applications found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

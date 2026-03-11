@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PlaceWise Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0f0e17;
+            --paper: #fffcf2;
+            --cream: #f5f0e8;
+            --accent: #e8531a;
+            --accent2: #2563eb;
+            --muted: #6b7280;
+            --border: #e2ddd6;
+            --success-color: #059669;
+            --warning-color: #d97706;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            font-size: 15px;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand-text, .nav-title {
+            font-family: 'Syne', sans-serif;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar-custom {
+            background-color: var(--ink);
+            border-bottom: 3px solid var(--accent);
+            padding: 0.75rem 1.5rem;
+        }
+
+        .navbar-brand-custom {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--paper) !important;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .navbar-brand-custom span {
+            color: var(--accent);
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255,252,242,0.75) !important;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.4rem 0.85rem !important;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--paper) !important;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: var(--accent) !important;
+            background: rgba(232, 83, 26, 0.1);
+        }
+
+        .badge-role {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+
+        .badge-admin { background: var(--accent); color: white; }
+        .badge-company { background: var(--accent2); color: white; }
+        .badge-student { background: var(--success-color); color: white; }
+
+        /* ── SIDEBAR ── */
+        .layout-wrapper {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 220px;
+            min-width: 220px;
+            background: var(--cream);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-link:hover {
+            background: white;
+            color: var(--accent);
+        }
+
+        .sidebar-link.active {
+            background: white;
+            color: var(--accent);
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-link i {
+            width: 18px;
+            text-align: center;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--ink);
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* ── STAT CARDS ── */
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+
+        .stat-card.orange::before { background: var(--accent); }
+        .stat-card.blue::before { background: var(--accent2); }
+        .stat-card.green::before { background: var(--success-color); }
+        .stat-card.yellow::before { background: var(--warning-color); }
+
+        .stat-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        /* ── CARDS ── */
+        .card-custom {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-custom .card-header-custom {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--cream);
+        }
+
+        .card-custom .card-body-custom {
+            padding: 1.25rem;
+        }
+
+        /* ── TABLE ── */
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-custom thead th {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0.75rem 1rem;
+            background: var(--cream);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .table-custom tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #faf9f6;
+        }
+
+        .table-custom tbody td {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            vertical-align: middle;
+        }
+
+        /* ── BADGES ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 3px 10px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Syne', sans-serif;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-approved, .status-active, .status-selected {
+            background: #d1fae5; color: #065f46;
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-rejected, .status-blacklisted { background: #fee2e2; color: #991b1b; }
+        .status-shortlisted { background: #dbeafe; color: #1e40af; }
+        .status-applied { background: #f3f4f6; color: #374151; }
+        .status-closed { background: #e5e7eb; color: #6b7280; }
+
+        /* ── BUTTONS ── */
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .btn-accent:hover {
+            background: #c94213;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-ink {
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--ink);
+            padding: 0.45rem 1.1rem;
+            border-radius: 6px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-ink:hover {
+            background: var(--ink);
+            color: white;
+        }
+
+        .btn-sm-custom {
+            padding: 0.3rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 5px;
+        }
+
+        /* ── FORMS ── */
+        .form-label-custom {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .form-control-custom {
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            padding: 0.6rem 0.85rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            color: var(--ink);
+            width: 100%;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(232, 83, 26, 0.12);
+        }
+
+        select.form-control-custom {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%236b7280' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            padding-right: 2.5rem;
+        }
+
+        /* ── FLASH MESSAGES ── */
+        .flash-container {
+            position: fixed;
+            top: 70px;
+            right: 1rem;
+            z-index: 9999;
+            width: 340px;
+        }
+
+        .flash-msg {
+            padding: 0.85rem 1.1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .flash-success { background: #d1fae5; color: #065f46; border-left: 3px solid #059669; }
+        .flash-danger { background: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
+        .flash-warning { background: #fef3c7; color: #92400e; border-left: 3px solid #d97706; }
+        .flash-info { background: #dbeafe; color: #1e40af; border-left: 3px solid #2563eb; }
+
+        /* ── DRIVE CARD ── */
+        .drive-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .drive-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .drive-company {
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .drive-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0.25rem 0 0.5rem;
+        }
+
+        .drive-meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .drive-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* ── SEARCH BAR ── */
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            opacity: 0.3;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+
+        /* ── PUBLIC PAGES ── */
+        .public-wrapper {
+            min-height: 100vh;
+            background: var(--paper);
+        }
+
+        .hero-section {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 30px,
+                rgba(232,83,26,0.04) 30px,
+                rgba(232,83,26,0.04) 31px
+            );
+        }
+
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            position: relative;
+            line-height: 1.1;
+        }
+
+        .hero-title .highlight {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,252,242,0.65);
+            max-width: 500px;
+            margin: 1rem auto 2rem;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Flash Messages -->
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash-msg flash-{{ category }}">
+                    <i class="bi bi-{% if category == 'success' %}check-circle{% elif category == 'danger' %}x-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    {% set _content %}{% block content %}{% endblock %}{% endset %}
+
+    {% if session.user_id %}
+    <!-- Authenticated Navbar -->
+    <nav class="navbar-custom d-flex align-items-center justify-content-between">
+        <a href="{{ url_for('index') }}" class="navbar-brand-custom">Place<span>Wise</span></a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge-role badge-{{ session.role }}">{{ session.role }}</span>
+            <span style="color: rgba(255,252,242,0.75); font-size: 0.875rem;">{{ session.name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn-outline-ink" style="border-color: rgba(255,252,242,0.3); color: rgba(255,252,242,0.75);" >
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            {% if session.role == 'admin' %}
+            <div class="sidebar-section">
+                <p class="sidebar-label">Admin Panel</p>
+                <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                    <i class="bi bi-grid-1x2"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin_companies') }}" class="sidebar-link {% if 'companies' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-building"></i> Companies
+                </a>
+                <a href="{{ url_for('admin_students') }}" class="sidebar-link {% if 'students' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-people"></i> Students
+                </a>
+                <a href="{{ url_for('admin_drives') }}" class="sidebar-link {% if 'drives' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-briefcase"></i> Drives
+                </a>
+                <a href="{{ url_for('admin_applications') }}" class="sidebar-link {% if 'applications' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-file-earmark-text"></i> Applications
+                </a>
+            </div>
+            {% elif session.role == 'company' %}
+            <div class="sidebar-section">
+                <p class="sidebar-label">Company</p>
+                <a href="{{ url_for('company_dashboard') }}" class="sidebar-link {% if request.endpoint == 'company_dashboard' %}active{% endif %}">
+                    <i class="bi bi-grid-1x2"></i> Dashboard
+                </a>
+                <a href="{{ url_for('company_create_drive') }}" class="sidebar-link {% if 'create_drive' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-plus-circle"></i> New Drive
+                </a>
+            </div>
+            {% elif session.role == 'student' %}
+            <div class="sidebar-section">
+                <p class="sidebar-label">Student</p>
+                <a href="{{ url_for('student_dashboard') }}" class="sidebar-link {% if request.endpoint == 'student_dashboard' %}active{% endif %}">
+                    <i class="bi bi-grid-1x2"></i> Dashboard
+                </a>
+                <a href="{{ url_for('student_history') }}" class="sidebar-link {% if 'history' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-clock-history"></i> History
+                </a>
+                <a href="{{ url_for('student_profile') }}" class="sidebar-link {% if 'profile' in request.endpoint %}active{% endif %}">
+                    <i class="bi bi-person-circle"></i> My Profile
+                </a>
+            </div>
+            {% endif %}
+        </aside>
+
+        <main class="main-content">
+            {{ _content }}
+        </main>
+    </div>
+
+    {% else %}
+    <!-- Public Navbar -->
+    <nav class="navbar-custom d-flex align-items-center justify-content-between">
+        <a href="{{ url_for('index') }}" class="navbar-brand-custom">Place<span>Wise</span></a>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('login') }}" class="btn-outline-ink" style="border-color: rgba(255,252,242,0.3); color: rgba(255,252,242,0.75);">Login</a>
+        </div>
+    </nav>
+    <main>
+        {{ _content }}
+    </main>
+    {% endif %}
+
+    <script>
+        // Auto-dismiss flash messages
+        setTimeout(() => {
+            document.querySelectorAll('.flash-msg').forEach(el => {
+                el.style.transition = 'opacity 0.5s';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 500);
+            });
+        }, 4000);
+    </script>
+</body>
+</html>

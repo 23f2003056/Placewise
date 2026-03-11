@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Edit Drive — PlaceWise{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Edit Drive</h1>
+    <p class="page-subtitle">Update placement drive details — will be re-submitted for approval</p>
+</div>
+
+<div style="max-width: 680px;">
+    <div class="card-custom">
+        <div class="card-body-custom">
+            <form method="POST">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-custom">Job Title *</label>
+                        <input type="text" name="job_title" class="form-control-custom" value="{{ drive.job_title }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Location</label>
+                        <input type="text" name="location" class="form-control-custom" value="{{ drive.location or '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label-custom">Package</label>
+                        <input type="text" name="package" class="form-control-custom" value="{{ drive.package or '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label-custom">Vacancies</label>
+                        <input type="number" name="vacancies" class="form-control-custom" value="{{ drive.vacancies or 1 }}" min="1">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Job Description *</label>
+                        <textarea name="job_description" class="form-control-custom" rows="4" required>{{ drive.job_description or '' }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Eligibility Criteria</label>
+                        <textarea name="eligibility" class="form-control-custom" rows="2">{{ drive.eligibility or '' }}</textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Application Deadline</label>
+                        <input type="date" name="deadline" class="form-control-custom" value="{{ drive.deadline or '' }}" required>
+                    </div>
+                    <div class="col-12 d-flex gap-2 mt-2">
+                        <button type="submit" class="btn-accent">
+                            <i class="bi bi-check2"></i> Save Changes
+                        </button>
+                        <a href="{{ url_for('company_dashboard') }}" class="btn-outline-ink">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

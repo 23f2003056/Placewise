@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Company Registration — PlaceWise{% endblock %}
+{% block content %}
+<div style="min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 2rem;">
+    <div style="width: 100%; max-width: 540px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;">Company Registration</h1>
+            <p style="color: var(--muted); font-size: 0.875rem;">Register your company — admin will review and approve your account</p>
+        </div>
+
+        <div class="card-custom">
+            <div class="card-body-custom">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label-custom">Company Name *</label>
+                            <input type="text" name="company_name" class="form-control-custom" placeholder="Acme Corp" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Company Email *</label>
+                            <input type="email" name="email" class="form-control-custom" placeholder="hr@company.com" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Password *</label>
+                            <input type="password" name="password" class="form-control-custom" placeholder="Choose a strong password" required minlength="6">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">HR Contact *</label>
+                            <input type="text" name="hr_contact" class="form-control-custom" placeholder="HR phone or email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Industry</label>
+                            <select name="industry" class="form-control-custom">
+                                <option value="">— Select —</option>
+                                <option>Technology</option>
+                                <option>Finance & Banking</option>
+                                <option>Consulting</option>
+                                <option>Manufacturing</option>
+                                <option>E-commerce</option>
+                                <option>Healthcare</option>
+                                <option>Education</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Website</label>
+                            <input type="url" name="website" class="form-control-custom" placeholder="https://www.company.com">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">About the Company</label>
+                            <textarea name="description" class="form-control-custom" rows="3" placeholder="Brief description..."></textarea>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn-accent" style="width: 100%; justify-content: center; padding: 0.7rem;">
+                                <i class="bi bi-building-check"></i> Submit for Approval
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.25rem; font-size: 0.875rem; color: var(--muted);">
+            Already registered? <a href="{{ url_for('login') }}" style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

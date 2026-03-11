@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Applications — {{ drive.job_title }}{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2">
+    <div>
+        <h1 class="page-title">{{ drive.job_title }}</h1>
+        <p class="page-subtitle">{{ applications|length }} application(s) &nbsp;·&nbsp; Deadline: {{ drive.deadline or 'N/A' }}</p>
+    </div>
+    <a href="{{ url_for('company_dashboard') }}" class="btn-outline-ink btn-sm-custom">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+{% if drive.eligibility %}
+<div style="background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.875rem;">
+    <strong style="font-family: 'Syne', sans-serif;">Eligibility:</strong> {{ drive.eligibility }}
+</div>
+{% endif %}
+
+<div class="card-custom">
+    <div style="overflow-x: auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>CGPA</th>
+                    <th>Phone</th>
+                    <th>Resume</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in applications %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 613;">{{ a.name }}</div>
+                        <div style="font-size: 0.75rem; color: var(--muted);">{{ a.email }}</div>
+                    </td>
+                    <td>{{ a.department or '—' }}</td>
+                    <td>{{ a.cgpa or '—' }}</td>
+                    <td>{{ a.phone or '—' }}</td>
+                    <td>
+                        {% if a.resume %}
+                        <a href="{{ url_for('static', filename='uploads/resumes/' + a.resume) }}" target="_blank" class="btn-outline-ink btn-sm-custom">
+                            <i class="bi bi-file-earmark-pdf"></i> View
+                        </a>
+                        {% else %}
+                        <span style="color: var(--muted); font-size: 0.8rem;">None</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size: 0.8rem; color: var(--muted);">{{ a.applied_at[:10] if a.applied_at else '—' }}</td>
+                    <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
+                    <td>
+                        <form method="POST" action="{{ url_for('company_update_application', aid=a.id) }}" style="display: flex; gap: 4px; flex-wrap: wrap;">
+                            <select name="status" class="form-control-custom" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; width: auto;">
+                                <option value="applied" {% if a.status == 'applied' %}selected{% endif %}>Applied</option>
+                                <option value="shortlisted" {% if a.status == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+                                <option value="selected" {% if a.status == 'selected' %}selected{% endif %}>Selected</option>
+                                <option value="rejected" {% if a.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                            <button type="submit" class="btn-accent btn-sm-custom">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox d-block"></i>
+                            <p>No applications yet</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
